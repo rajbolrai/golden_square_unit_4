@@ -1,6 +1,6 @@
 import string
 import re
-
+import math
 class DiaryEntry:
     def __init__(self, title, contents):
         # Parameters:
@@ -8,6 +8,9 @@ class DiaryEntry:
         #   contents: string
         if type(title) != str or type(contents) != str:
             raise TypeError("Error: invalid type. Expected String")
+        
+        if title == '' or contents == '':
+            raise Exception("Error: title and content cannot be empty")
         
         self._title = title
         self._contents = contents
@@ -40,8 +43,10 @@ class DiaryEntry:
         # Returns:
         #   int: an estimate of the reading time in minutes for the contents at
         #        the given wpm.
+        if wpm <= 0:
+            raise Exception("Error: wpm cannot be less than 1")
         
-        time_taken_to_read = round(self.count_words()/wpm,2)
+        time_taken_to_read = math.ceil(self.count_words()/wpm)
         return f"{time_taken_to_read} mins"
         
 
@@ -59,7 +64,7 @@ class DiaryEntry:
         # skipping what has already been read, until the contents is fully read.
         # The next call after that should restart from the beginning.
         string_to_return = ""
-        self.count_words()
+        self.count_words() #save words in list called self._content_words
         word_count = len(self._content_words)
         
         for i in range(wpm * minutes):

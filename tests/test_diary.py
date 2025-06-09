@@ -3,13 +3,25 @@ import pytest
 
 """ 
 Check to see if the title and content is of type string
-return invalid type error
+raise an invalid type error
 """
 def test_type_of_tile_content_is_string():
     with pytest.raises(TypeError) as e:
         DiaryEntry(1,2)
     error_message = str(e.value)
     assert error_message == "Error: invalid type. Expected String"
+    
+    
+    """ 
+Check empty title and content 
+raise an error
+"""
+def test_given_empty_title_and_content_output_error():
+    with pytest.raises(Exception) as e:
+        DiaryEntry('','')
+    error_message = str(e.value)
+    assert error_message == "Error: title and content cannot be empty"
+
 """
 Given a title and content
 format will return a string with the corrected format
@@ -24,12 +36,23 @@ Given a title and content
 format will return a string with the corrected format
 """
 def test_given_valid_entry_output_correct_word_count():
-    diary_entry = DiaryEntry("Thursday", "I was trying my hardest to 4' it's go-go-go go-go to-do let's stay locked in.?")
+    diary_entry = DiaryEntry("Thursday", "I was trying my hardest to 4' it's go-go-go go-go to-do let's stay locked in.? hrk////..324234 ")
     assert diary_entry.count_words() == 15
+
+"""
+Given less than zero wpm
+raise error
+"""
+def test_given_zero_wpm_output_error():
+    diary_entry = DiaryEntry("Monday", "one two three four five")
+    with pytest.raises(Exception) as e:
+        diary_entry.reading_time(-1)
+    error_message = str(e.value)
+    assert error_message == "Error: wpm cannot be less than 1"
+    
 
 """ Given their wpm 
 return the time taken to read the contents at the given wpm in minutes"""
-
 def test_given_valid_entry_output_correct_word_per_minute():
     diary_entry = DiaryEntry("Thursday", 
                                 "one two three four five six seven eight nine ten "
@@ -54,9 +77,11 @@ def test_given_valid_entry_output_correct_word_per_minute():
                                 + "one two three four five six seven eight nine ten "                                
                                 )
     word_per_minute = diary_entry.reading_time(100)
-    assert word_per_minute == "2.01 mins"
-    
-    
+    assert word_per_minute == "3 mins"
+"""
+Given wpm 5 and 5 minute. Content word count 100. 
+Return 25 words of content
+"""
 def test_can_read_one_chunk():
     diary_entry = DiaryEntry("Thursday", """
                             "one two three four five six seven eight nine ten 
