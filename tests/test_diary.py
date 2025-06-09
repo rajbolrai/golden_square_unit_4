@@ -83,8 +83,7 @@ def test_can_read_multiple_chunks():
                             you are able to survive."""                      
                             )
     diary_entry.reading_chunk(5,2)
-    curr_reading_chunk2 = diary_entry.reading_chunk(5,3)
-    
-    
-    
-    assert curr_reading_chunk2 == """unexpected here and your mind will be challenged and expanded in ways that you never"""
+    diary_entry.reading_chunk(5,3)
+    diary_entry.reading_chunk(5,3)
+    curr_reading_chunk = diary_entry.reading_chunk(5,2)
+    assert curr_reading_chunk == """Welcome to my world. You will be greeted by the"""

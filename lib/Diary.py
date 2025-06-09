@@ -12,7 +12,6 @@ class DiaryEntry:
         self._title = title
         self._contents = contents
         self._content_words = []
-        self._has_read = False
         self.curr_word_count = 0
         
 
@@ -29,8 +28,9 @@ class DiaryEntry:
         # title_only_words = [i.strip(string.punctuation) for i in self._title.split() if i.strip(string.punctuation).isalpha()]
         # contents_only_words = [i.strip(string.punctuation) for i in self._contents.split() if i.strip(string.punctuation).isalpha()]
         title_words = re.findall(r"\b[a-zA-Z']+(?:-[a-zA-Z']+)*\b", self._title)
-        content_words = re.findall(r"\b[a-zA-Z']+(?:-[a-zA-Z']+)*\b", self._contents)
+        content_words = re.findall(r"\b[a-zA-Z]+(?:'[a-zA-Z]+)?(?:-[a-zA-Z'.?!]+)*(?:[?!.]+)?(?!\w)", self._contents)
         self._content_words = content_words
+        print(self._content_words)
         return len(title_words) + len(content_words)
 
     def reading_time(self, wpm):
@@ -59,22 +59,13 @@ class DiaryEntry:
         # skipping what has already been read, until the contents is fully read.
         # The next call after that should restart from the beginning.
         string_to_return = ""
-        test = self.count_words()
+        self.count_words()
         word_count = len(self._content_words)
         
-        print(self._content_words)
-        
-        if  self.curr_word_count < word_count:
-            for i in range(wpm * minutes):
-                if self.curr_word_count == word_count:
-                    break
-                string_to_return += self._content_words[self.curr_word_count] + " "
-                self.curr_word_count += 1
-                #print(string_to_return)
-        elif self.curr_word_count == word_count:
-            self.curr_word_count = 0
-            
-            
+        for i in range(wpm * minutes):
+            if self.curr_word_count == word_count:
+                self.curr_word_count = 0
+                break
+            string_to_return += self._content_words[self.curr_word_count] + " "
+            self.curr_word_count += 1
         return string_to_return.strip()
-    
-    
